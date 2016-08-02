@@ -53,11 +53,11 @@ install_jameica() {
     wget -O "$TARGETDIR/jameica-$JAMEICARELEASE.src.zip" "$JAMEICASRC"
     unzip "jameica-$JAMEICARELEASE.zip"
     mvn install:install-file -Dfile=jameica/jameica.jar -DgroupId=de.willuhn.jameica \
-            -DartifactId=core -Dversion=$JAMEICARELEASE -Dpackaging=jar \
+            -DartifactId=jameica-core -Dversion=$JAMEICARELEASE -Dpackaging=jar \
             -Dsources=jameica-$JAMEICARELEASE.src.zip
     # no sources :(
     mvn install:install-file -Dfile=jameica/lib/de_willuhn_util/de_willuhn_util.jar \
-        -DartifactId=util -DgroupId=de.willuhn.jameica -Dversion=$JAMEICARELEASE -Dpackaging=jar
+        -DartifactId=jameica-util -DgroupId=de.willuhn.jameica -Dversion=$JAMEICARELEASE -Dpackaging=jar
 }
 
 install_hibiscus() {
@@ -68,7 +68,7 @@ install_hibiscus() {
     cd "${TARGETDIR}"
     unzip "hibiscus-$HIBISCUSRELEASE.zip"
     mvn install:install-file -Dfile=hibiscus/hibiscus.jar -DgroupId=de.willuhn.jameica \
-            -DartifactId=hbci -Dversion=$HIBISCUSRELEASE -Dpackaging=jar \
+            -DartifactId=jameica-hbci -Dversion=$HIBISCUSRELEASE -Dpackaging=jar \
             -Dsources=hibiscus-$HIBISCUSRELEASE.src.zip
 }
 

@@ -16,19 +16,19 @@
   <dependencies>
     <dependency>
       <groupId>de.willuhn.jameica</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>jameica-core</artifactId>
       <version>2.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>de.willuhn.jameica</groupId>
-      <artifactId>util</artifactId>
+      <artifactId>jameica-util</artifactId>
       <version>2.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>de.willuhn.jameica</groupId>
-      <artifactId>hbci</artifactId>
+      <artifactId>jameica-hbci</artifactId>
       <version>2.6</version>
       <scope>provided</scope>
     </dependency>
