@@ -20,7 +20,7 @@
 
 package de.bmarwell.hibiscus.ffb;
 
-import de.bmarwell.hibiscus.ffb.mobile.FfbMobileDepotwertRetriever;
+import de.bmarwell.ffb.depot.client.FfbMobileDepotwertRetriever;
 
 import com.google.common.base.Preconditions;
 

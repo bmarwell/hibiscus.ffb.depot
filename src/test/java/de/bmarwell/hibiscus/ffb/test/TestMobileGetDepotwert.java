@@ -1,8 +1,8 @@
 package de.bmarwell.hibiscus.ffb.test;
 
-import de.bmarwell.hibiscus.ffb.mobile.FfbMobileDepotwertRetriever;
-import de.bmarwell.hibiscus.ffb.mobile.LoginResponse;
-import de.bmarwell.hibiscus.ffb.mobile.MyFfbResponse;
+import de.bmarwell.ffb.depot.client.FfbMobileDepotwertRetriever;
+import de.bmarwell.ffb.depot.client.LoginResponse;
+import de.bmarwell.ffb.depot.client.MyFfbResponse;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 

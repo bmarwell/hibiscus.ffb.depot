@@ -21,7 +21,7 @@
       <version>${dependency.jameica.version}</version>
       <scope>provided</scope>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>de.willuhn.jameica</groupId>
       <artifactId>jameica-datasource</artifactId>
       <version>${dependency.jameica.version}</version>
@@ -72,7 +72,34 @@
       <artifactId>gson</artifactId>
       <version>2.6.2</version>
     </dependency>
+
+    <dependency>
+        <groupId>de.bmarwell</groupId>
+        <artifactId>ffb.depot.client</artifactId>
+        <version>[0.0.1-SNAPSHOT,)</version>
+    </dependency>
   </dependencies>
 
+  <!-- disable doclint in jdk8 -->
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
