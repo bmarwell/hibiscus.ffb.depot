@@ -34,13 +34,13 @@ import javax.annotation.Resource;
  */
 public class FfbSynchronizeKonzoauszug extends SynchronizeJobKontoauszug implements FfbSynchronizeJob {
 
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(Plugin.class).getResources().getI18N();
+  private static final I18N i18n = Application.getPluginLoader().getPlugin(Plugin.class).getResources().getI18N();
 
   @Resource
   private FfbSynchronizeBackend backend = null;
 
   @Override
-  public void setDepotwert() {
+  public void setDepotwert(String kontonummer) {
     FfbScraper scraper = new FfbScraper();
     scraper.scrape();
     String depotwert = scraper.getDepotwert();

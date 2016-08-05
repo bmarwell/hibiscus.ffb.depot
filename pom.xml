@@ -8,28 +8,35 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     <dependency.slf4j.version>1.7.16</dependency.slf4j.version>
+    <dependency.jameica.version>[2.6,)</dependency.jameica.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>de.willuhn.jameica</groupId>
       <artifactId>jameica-core</artifactId>
-      <version>2.6</version>
+      <version>${dependency.jameica.version}</version>
+      <scope>provided</scope>
+    </dependency>
+        <dependency>
+      <groupId>de.willuhn.jameica</groupId>
+      <artifactId>jameica-datasource</artifactId>
+      <version>${dependency.jameica.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>de.willuhn.jameica</groupId>
       <artifactId>jameica-util</artifactId>
-      <version>2.6</version>
+      <version>${dependency.jameica.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>de.willuhn.jameica</groupId>
       <artifactId>jameica-hbci</artifactId>
-      <version>2.6</version>
+      <version>${dependency.jameica.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -59,6 +66,11 @@
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>htmlunit</artifactId>
       <version>2.21</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.6.2</version>
     </dependency>
   </dependencies>
 

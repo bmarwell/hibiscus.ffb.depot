@@ -75,7 +75,7 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
         this.checkInterrupted();
 
         FfbSynchronizeJob ffbjob = (FfbSynchronizeJob) job;
-        ffbjob.setDepotwert();
+        ffbjob.setDepotwert(this.getKonto().getKontonummer());
 
         monitor.addPercentComplete(step);
       }

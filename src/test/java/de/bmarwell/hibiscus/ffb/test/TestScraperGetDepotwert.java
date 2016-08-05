@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestGetDepotwert {
+public class TestScraperGetDepotwert {
 
-  private static final Logger LOG = LoggerFactory.getLogger(TestGetDepotwert.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TestScraperGetDepotwert.class);
 
   @Before
   public void setUp() throws Exception {
