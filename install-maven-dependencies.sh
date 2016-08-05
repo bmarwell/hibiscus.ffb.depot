@@ -3,11 +3,8 @@ set -euo pipefail
 
 BASEDIR="$(pwd)"
 TARGETDIR="${BASEDIR}/target"
-JAMEICARELEASE="2.6"
 HIBISCUSRELEASE="2.6"
 
-JAMEICALIB="https://www.willuhn.de/products/jameica/releases/$JAMEICARELEASE/jameica/jameica.zip"
-JAMEICASRC="https://www.willuhn.de/products/jameica/releases/$JAMEICARELEASE/jameica/jameica.src.zip"
 HIBISCUSLIB="https://www.willuhn.de/products/hibiscus/releases/$HIBISCUSRELEASE/hibiscus.zip"
 HIBISCUSSRC="https://www.willuhn.de/products/hibiscus/releases/$HIBISCUSRELEASE/hibiscus.src.zip"
 
@@ -22,15 +19,7 @@ cleanup() {
     if [ -f  "${TARGETDIR}/hibiscus-$HIBISCUSRELEASE.src.zip" ]; then
         rm -r "${TARGETDIR}/hibiscus-$HIBISCUSRELEASE.src.zip"
     fi
-    if [ -d  "${TARGETDIR}/jameica" ]; then
-        rm -r "${TARGETDIR}/jameica"
-    fi
-    if [ -f  "${TARGETDIR}/jameica-$JAMEICARELEASE.zip" ]; then
-        rm -r "${TARGETDIR}/jameica-$JAMEICARELEASE.zip"
-    fi
-    if [ -f  "${TARGETDIR}/jameica-$JAMEICARELEASE.src.zip" ]; then
-        rm -r "${TARGETDIR}/jameica-$JAMEICARELEASE.src.zip"
-    fi
+    rm -fr "${TARGETDIR}/jameica-meta"
 }
 
 check_target_dir() {
@@ -48,16 +37,13 @@ check_target_dir() {
 install_jameica() {
     # Gibt leider kein Buildscript :-(
     # git clone "https://github.com/willuhn/jameica.git" "${JAMEICADIR}"
-    cd "${TARGETDIR}"
-    wget -O "$TARGETDIR/jameica-$JAMEICARELEASE.zip" "$JAMEICALIB"
-    wget -O "$TARGETDIR/jameica-$JAMEICARELEASE.src.zip" "$JAMEICASRC"
-    unzip "jameica-$JAMEICARELEASE.zip"
-    mvn install:install-file -Dfile=jameica/jameica.jar -DgroupId=de.willuhn.jameica \
-            -DartifactId=jameica-core -Dversion=$JAMEICARELEASE -Dpackaging=jar \
-            -Dsources=jameica-$JAMEICARELEASE.src.zip
-    # no sources :(
-    mvn install:install-file -Dfile=jameica/lib/de_willuhn_util/de_willuhn_util.jar \
-        -DartifactId=jameica-util -DgroupId=de.willuhn.jameica -Dversion=$JAMEICARELEASE -Dpackaging=jar
+    git clone https://github.com/bmhm/jameica-meta ${TARGETDIR}/jameica-meta
+    cd "${TARGETDIR}/jameica-meta"
+    git submodule init
+    git submodule update
+    mvn install
+    cd ..
+    rm -fr "${TARGETDIR}/jameica-meta"
 }
 
 install_hibiscus() {
