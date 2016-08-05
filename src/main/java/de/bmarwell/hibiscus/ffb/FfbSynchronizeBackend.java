@@ -32,6 +32,7 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 /**
  * Synchronisiert Daten von FFB-Konten.
@@ -96,6 +97,8 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
 
       monitor.log(" ");
       monitor.log(i18n.tr("Synchronisiere FFB-Konto: {0}", kn));
+      String pin = Application.getCallback()
+          .askPassword("Bitte geben Sie Ihre PIN für den FFB-Zugang " + this.getKonto().getKundennummer() + " ein.");
 
       Logger.info("processing jobs");
       for (SynchronizeJob job : this.jobs) {
@@ -104,10 +107,16 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
         FfbSynchronizeJob ffbjob = (FfbSynchronizeJob) job;
         double depotwert = ffbjob.getDepotwert(
             this.getKonto().getKundennummer(),
-            this.getKonto().getMeta(FfbSynchronizeBackend.PROP_PASSWORT, ""),
+            pin,
             this.getKonto().getKontonummer());
         Umsatz newUmsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class, null);
+        Date umsatzdatum = new Date();
+        newUmsatz.setKonto(this.getKonto());
         newUmsatz.setSaldo(depotwert);
+        newUmsatz.setDatum(umsatzdatum);
+        newUmsatz.setValuta(umsatzdatum);
+        newUmsatz.setBetrag(0.00);
+        newUmsatz.setArt("Depotwert");
         newUmsatz.store();
         this.getKonto().setSaldo(depotwert);
 
