@@ -21,13 +21,17 @@
 package de.bmarwell.hibiscus.ffb;
 
 import de.willuhn.annotation.Lifecycle;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
+
+import java.rmi.RemoteException;
 
 /**
  * Synchronisiert Daten von FFB-Konten.
@@ -36,10 +40,33 @@ import de.willuhn.util.ProgressMonitor;
 public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchronizeJobProvider> {
 
   private static final I18N i18n = Application.getPluginLoader().getPlugin(Plugin.class).getResources().getI18N();
+  public static final String PROP_PASSWORT = "Passwort";
 
   @Override
   public String getName() {
     return i18n.tr("FIL Fondsbank (FFB)");
+  }
+
+  @Override
+  public boolean supports(Class<? extends SynchronizeJob> type, Konto konto) {
+    /* Es wird geprüft, ob das Konto null oder disabled ist. */
+    boolean superSupports = super.supports(type, konto);
+    if (!superSupports) {
+      return false;
+    }
+
+    /* Konto ist bei Bic oder Ktr valide. */
+    try {
+      if (konto.getBLZ().equals("50021120")
+          || konto.getBic().equals("FFBKDEFFTHK")) {
+        return true;
+      }
+    } catch (RemoteException re) {
+      Logger.error("Kontodaten konnten nicht ermittelt werden - Prüfung auf FFB-Konto nicht möglich.", re);
+    }
+
+    /* Im Zweifel kein Support */
+    return false;
   }
 
   @Override
@@ -75,7 +102,14 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
         this.checkInterrupted();
 
         FfbSynchronizeJob ffbjob = (FfbSynchronizeJob) job;
-        ffbjob.setDepotwert(this.getKonto().getKontonummer());
+        double depotwert = ffbjob.getDepotwert(
+            this.getKonto().getKundennummer(),
+            this.getKonto().getMeta(FfbSynchronizeBackend.PROP_PASSWORT, ""),
+            this.getKonto().getKontonummer());
+        Umsatz newUmsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class, null);
+        newUmsatz.setSaldo(depotwert);
+        newUmsatz.store();
+        this.getKonto().setSaldo(depotwert);
 
         monitor.addPercentComplete(step);
       }

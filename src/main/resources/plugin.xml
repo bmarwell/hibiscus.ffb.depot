@@ -3,7 +3,7 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
-        name="hibiscus.sync.example" version="1.0.0" class="org.jameica.hibiscus.sync.example.Plugin">
+        name="hibiscus.ffb.depot" version="1.0.0" class="de.bmarwell.hibiscus.ffb.Plugin">
 
   <description>Hibiscus-Support für Beispiel-Bank</description>
   <url>https://github.com/bmhm/hibiscus.ffb.depot</url>
@@ -15,7 +15,7 @@
   </requires>
 
   <classfinder>
-<!--     <include>de\.bmarwell\.example\.jar</include> -->
+    <include>hibiscus\.ffb\.depot\.jar</include>
     <include>.*\.class</include>
   </classfinder>
 

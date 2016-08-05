@@ -20,11 +20,12 @@
 
 package de.bmarwell.hibiscus.ffb;
 
-import de.bmarwell.hibiscus.ffb.scraper.FfbScraper;
+import de.bmarwell.hibiscus.ffb.mobile.FfbMobileDepotwertRetriever;
+
+import com.google.common.base.Preconditions;
 
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 import javax.annotation.Resource;
@@ -40,14 +41,18 @@ public class FfbSynchronizeKonzoauszug extends SynchronizeJobKontoauszug impleme
   private FfbSynchronizeBackend backend = null;
 
   @Override
-  public void setDepotwert(String kontonummer) {
-    FfbScraper scraper = new FfbScraper();
-    scraper.scrape();
-    String depotwert = scraper.getDepotwert();
+  public double getDepotwert(String login, String pin, String depotnummer) {
+    Preconditions.checkNotNull(login, "FFB-login ist null.");
+    Preconditions.checkNotNull(pin, "FFB-pin ist null.");
+    Preconditions.checkNotNull(depotnummer, "FFB-depotnummer ist null.");
 
-    Logger.debug("Depotwert: [" + depotwert + "].");
+    FfbMobileDepotwertRetriever scraper = new FfbMobileDepotwertRetriever(login, pin, depotnummer);
+    scraper.synchronize();
+
+    // Logger.debug("Depotwert: [" + depotwert + "].");
 
     // TODO: Depowert ins konto setzen + als Umsatz.
+    return scraper.depotwert();
   }
 
 
