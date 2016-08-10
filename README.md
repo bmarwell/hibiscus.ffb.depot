@@ -44,8 +44,8 @@ hibiscus.ffb.depot/info.txt
 
 
 ## Status des Projekts
-Derzeit funktioniert der Scraper, der bald in ein eigenes Projekt namens [FFB Depot Client](https://github.com/bmhm/ffb.depot.client/) ausgelagert wird. Dort wird das Protokoll auch beschrieben sein. Es wird das JSON-basierte Protokoll von Fidelity benutzt.
-Die Synchronisierung innerhalb von Hibiskus klappt mangels PIN-Abfrage noch nicht.
+Derzeit funktioniert das Projekt. Der FFB-Client ist in ein eigenes Projekt namens [FFB Depot Client](https://github.com/bmhm/ffb.depot.client/) ausgelagert. Dort wird das FFB-HTTP-Protokoll auch beschrieben. Es ist ein JSON-basierte Protokoll von Fidelity.
+Die Synchronisierung innerhalb von Hibiskus klappt per PIN-Abfrage.
 
 
 ## Protokoll
