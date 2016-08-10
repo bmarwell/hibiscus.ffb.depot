@@ -20,13 +20,22 @@
 
 package de.bmarwell.hibiscus.ffb;
 
-import de.bmarwell.ffb.depot.client.FfbMobileDepotwertRetriever;
+import de.bmarwell.ffb.depot.client.FfbDepotUtils;
+import de.bmarwell.ffb.depot.client.FfbMobileClient;
+import de.bmarwell.ffb.depot.client.err.FfbClientError;
+import de.bmarwell.ffb.depot.client.json.MyFfbResponse;
+import de.bmarwell.ffb.depot.client.value.FfbDepotNummer;
+import de.bmarwell.ffb.depot.client.value.FfbLoginKennung;
+import de.bmarwell.ffb.depot.client.value.FfbPin;
 
 import com.google.common.base.Preconditions;
 
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
+
+import java.net.MalformedURLException;
 
 import javax.annotation.Resource;
 
@@ -34,6 +43,8 @@ import javax.annotation.Resource;
  * Lädt den Depotwert und erstellt dazu einen Umsatz.
  */
 public class FfbSynchronizeKonzoauszug extends SynchronizeJobKontoauszug implements FfbSynchronizeJob {
+
+  private static final String LOGIN_ERROR = "Login bei der FFB nicht erfolgreich! Bitte erneut versuchen oder Bug melden.";
 
   private static final I18N i18n = Application.getPluginLoader().getPlugin(Plugin.class).getResources().getI18N();
 
@@ -46,13 +57,30 @@ public class FfbSynchronizeKonzoauszug extends SynchronizeJobKontoauszug impleme
     Preconditions.checkNotNull(pin, "FFB-pin ist null.");
     Preconditions.checkNotNull(depotnummer, "FFB-depotnummer ist null.");
 
-    FfbMobileDepotwertRetriever scraper = new FfbMobileDepotwertRetriever(login, pin, depotnummer);
-    scraper.synchronize();
+    FfbLoginKennung ffblogin = FfbLoginKennung.of(login);
+    FfbPin ffbpin = FfbPin.of(pin);
 
-    // Logger.debug("Depotwert: [" + depotwert + "].");
+    try {
+      FfbMobileClient ffbClient = new FfbMobileClient(ffblogin, ffbpin);
+      ffbClient.logon();
 
-    // TODO: Depowert ins konto setzen + als Umsatz.
-    return scraper.depotwert();
+      if (!ffbClient.loginInformation().isPresent() || !ffbClient.loginInformation().get().isLoggedIn()) {
+        throw new IllegalStateException(LOGIN_ERROR);
+      }
+
+      FfbDepotNummer depotNr = FfbDepotNummer.of(depotnummer);
+      MyFfbResponse accountData = ffbClient.fetchAccountData();
+
+      // In den AccountDaten könnten mehere Depots sein. Es soll aber nur ein Depot
+      // angegeben werden.
+      return FfbDepotUtils.getGesamtBestand(accountData, depotNr);
+    } catch (FfbClientError error) {
+      Logger.error(LOGIN_ERROR, error);
+      throw new IllegalStateException(LOGIN_ERROR);
+    } catch (MalformedURLException error) {
+      Logger.error(LOGIN_ERROR, error);
+      throw new IllegalStateException(LOGIN_ERROR);
+    }
   }
 
 

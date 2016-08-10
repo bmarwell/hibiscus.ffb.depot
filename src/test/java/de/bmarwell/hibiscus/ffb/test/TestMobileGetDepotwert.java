@@ -1,8 +1,11 @@
 package de.bmarwell.hibiscus.ffb.test;
 
-import de.bmarwell.ffb.depot.client.FfbMobileDepotwertRetriever;
-import de.bmarwell.ffb.depot.client.LoginResponse;
-import de.bmarwell.ffb.depot.client.MyFfbResponse;
+import de.bmarwell.ffb.depot.client.FfbMobileClient;
+import de.bmarwell.ffb.depot.client.err.FfbClientError;
+import de.bmarwell.ffb.depot.client.json.LoginResponse;
+import de.bmarwell.ffb.depot.client.json.MyFfbResponse;
+import de.bmarwell.ffb.depot.client.value.FfbLoginKennung;
+import de.bmarwell.ffb.depot.client.value.FfbPin;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class TestMobileGetDepotwert {
 
@@ -23,8 +27,8 @@ public class TestMobileGetDepotwert {
   }
 
   @Test
-  public void testGetDepotwertWithoutCredentials() throws FailingHttpStatusCodeException, IOException {
-    FfbMobileDepotwertRetriever mobileAgent = new FfbMobileDepotwertRetriever();
+  public void testGetDepotwertWithoutCredentials() throws FailingHttpStatusCodeException, IOException, FfbClientError {
+    FfbMobileClient mobileAgent = new FfbMobileClient();
     mobileAgent.logon();
 
     Assert.assertTrue(mobileAgent.loginInformation().isPresent());
@@ -40,11 +44,19 @@ public class TestMobileGetDepotwert {
    * <p>Login taken from: <a href=
    * "http://www.wertpapier-forum.de/topic/31477-demo-logins-depots-einfach-mal-testen/page__view__findpost__p__567459">
    * Wertpapier-Forum</a>.<br> Login: 22222301<br> PIN: 91901</p>
+   *
+   * @throws FfbClientError
+   *           Fehler beim Holen der Daten über HTTPS.
+   * @throws MalformedURLException
+   *           Fehler beim Erstellen des Clients.
    */
   @Test
-  public void testGetDepotwertWithCredentials() {
-    FfbMobileDepotwertRetriever mobileAgent = new FfbMobileDepotwertRetriever("22222301", "91901", "22222301");
-    mobileAgent.synchronize();
+  public void testGetDepotwertWithCredentials() throws FfbClientError, MalformedURLException {
+    FfbLoginKennung ffblogin = FfbLoginKennung.of("22222301");
+    FfbPin ffbpin = FfbPin.of("91901");
+
+    FfbMobileClient mobileAgent = new FfbMobileClient(ffblogin, ffbpin);
+    mobileAgent.logon();
     Assert.assertTrue(mobileAgent.loginInformation().isPresent());
 
     LoginResponse loginResponse = mobileAgent.loginInformation().get();
@@ -54,8 +66,7 @@ public class TestMobileGetDepotwert {
     Assert.assertEquals("Customer", loginResponse.getUsertype());
     Assert.assertEquals("E1000590054", loginResponse.getLastname());
 
-    Assert.assertTrue(mobileAgent.depotInformation().isPresent());
-    MyFfbResponse ffbDepotInfo = mobileAgent.depotInformation().get();
+    MyFfbResponse ffbDepotInfo = mobileAgent.fetchAccountData();
     Assert.assertTrue(ffbDepotInfo.isLogin());
     Assert.assertFalse(ffbDepotInfo.isModelportfolio());
     Assert.assertTrue(ffbDepotInfo.getGesamtwert() != 0.00d);
