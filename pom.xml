@@ -5,7 +5,7 @@
   <artifactId>hibiscus.ffb.depot</artifactId>
   <version>0.0.2</version>
   <name>Hibiscus FFB Depot Connector</name>
-  url>https://github.com/bmhm/hibiscus.ffb.depot</url>
+  <url>https://github.com/bmhm/hibiscus.ffb.depot</url>
 
   <licenses>
     <license>
