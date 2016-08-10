@@ -28,6 +28,9 @@ check_target_dir() {
         exit 1
     fi
     if [ ! -e "${TARGETDIR}" ]; then
+        mkdir -p "${TARGETDIR}"
+    fi
+    if [ ! -e "${TARGETDIR}" ]; then
         echo "Konnte TARGETDIR nicht bestimmen [${TARGETDIR}]." >&2
         exit 1
     fi
