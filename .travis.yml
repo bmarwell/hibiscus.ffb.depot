@@ -15,4 +15,4 @@ cache:
     - '$HOME/.m2'
 
 after_success:
-  - bash <(curl -s https://codecov.io/bas)h
+  - bash <(curl -s https://codecov.io/bash)
