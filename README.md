@@ -39,7 +39,7 @@ hibiscus.ffb.depot/lib/guava-19.0.jar
 hibiscus.ffb.depot/lib/htmlunit-2.21.jar
 hibiscus.ffb.depot/lib/gson-2.6.2.jar
 hibiscus.ffb.depot/lib/ffb.depot.client-0.1.0.jar
-
+```
 
 ## Status des Projekts
 Derzeit funktioniert das Projekt. Der FFB-Client ist in ein eigenes Projekt namens [FFB Depot Client](https://github.com/bmhm/ffb.depot.client/) ausgelagert. Dort wird das FFB-HTTP-Protokoll auch beschrieben. Es ist ein JSON-basierte Protokoll von Fidelity.
