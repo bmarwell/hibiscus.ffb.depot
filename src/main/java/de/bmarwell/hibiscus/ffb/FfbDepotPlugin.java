@@ -25,6 +25,6 @@ import de.willuhn.jameica.plugin.AbstractPlugin;
 /**
  * Plugin loader class for Hibiscus.
  */
-public class Plugin extends AbstractPlugin {
+public class FfbDepotPlugin extends AbstractPlugin {
 
 }

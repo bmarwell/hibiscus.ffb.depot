@@ -3,11 +3,11 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
-        name="hibiscus.ffb.depot" version="1.0.0" class="de.bmarwell.hibiscus.ffb.Plugin">
+        name="hibiscus.ffb.depot" version="${project.version}" class="de.bmarwell.hibiscus.ffb.FfbDepotPlugin">
 
-  <description>Hibiscus-Support für Beispiel-Bank</description>
+  <description>Hibiscus-Support für FFB Fidelity Depot</description>
   <url>https://github.com/bmhm/hibiscus.ffb.depot</url>
-  <homepage>https://www.bmarwell.de/</homepage>
+  <homepage>https://github.com/bmhm/hibiscus.ffb.depot</homepage>
   <license>GNU GPLv2 or later</license>
 
   <requires jameica="2.6.0+">

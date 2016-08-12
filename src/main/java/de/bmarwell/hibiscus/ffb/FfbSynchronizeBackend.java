@@ -40,7 +40,7 @@ import java.util.Date;
 @Lifecycle(Lifecycle.Type.CONTEXT)
 public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchronizeJobProvider> {
 
-  private static final I18N i18n = Application.getPluginLoader().getPlugin(Plugin.class).getResources().getI18N();
+  private static final I18N i18n = Application.getPluginLoader().getPlugin(FfbDepotPlugin.class).getResources().getI18N();
   public static final String PROP_PASSWORT = "Passwort";
 
   @Override

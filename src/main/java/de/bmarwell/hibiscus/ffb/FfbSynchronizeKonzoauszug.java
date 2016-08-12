@@ -46,7 +46,7 @@ public class FfbSynchronizeKonzoauszug extends SynchronizeJobKontoauszug impleme
 
   private static final String LOGIN_ERROR = "Login bei der FFB nicht erfolgreich! Bitte erneut versuchen oder Bug melden.";
 
-  private static final I18N i18n = Application.getPluginLoader().getPlugin(Plugin.class).getResources().getI18N();
+  private static final I18N i18n = Application.getPluginLoader().getPlugin(FfbDepotPlugin.class).getResources().getI18N();
 
   @Resource
   private FfbSynchronizeBackend backend = null;
