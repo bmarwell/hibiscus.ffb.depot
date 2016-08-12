@@ -10,37 +10,35 @@ Der Hibiscus-Connector für FFB-Depots (FIL Fondsbank, ehemals Frankfurter Fonds
  * *Bankleitzahl* -- 5002 1120
 
 ## Installation
-### Derzeit
-Hibiscus erwartet eine spezielle Verzeichnisstruktur. Diese muss derzeit per Hand angelegt werden.
-```bash
-mvn package
-cp target/hibiscus.ffb.depot-*.jar <hibiscusdir>/plugins/hibiscus.ffb.depot/hibiscus.ffb.depot.jar
-cp plugin.xml <hibiscusdir>/plugins/hibiscus.ffb.depot/plugin.xml
-cp ~/.m2/repository/..../gson-2.6.2.jar  <hibiscusdir>/plugins/hibiscus.ffb.depot/lib/
-cp ~/.m2/repository/..../guava-19.0.jar  <hibiscusdir>/plugins/hibiscus.ffb.depot/lib/
-```
 
-### Später
+### Per Update-URL
+(TBD)
+
+
+### Aus dem Release
+Man entpackt das .zip oder .tar.bz2-File einfach in das Jameica-Plugins-Verzeichnis.
+
+
+### Aus den Quellen
 Mit dem Maven-Assembly-Plugin wird ein Archiv erstellt (.zip, .tar.bz2 o.ä.), welches alle benötigten .jar-Dateien sowie die plugin.xml enhtält.
 ```bash
 mvn package
 cd <hibiscusdir>/plugins/
-unzip <mvnprojectpath>/target/hibiscus.ffb.depot.tar.bz2
+tar xvf <mvnprojectpath>/target/hibiscus.ffb.depot.tar.bz2
 ```
 
 Verzeichnisstruktur:
 ```bash
-$ pwd
-~/.config/hibiscus/plugins
-$ ls -l hibiscus.ffb.depot/
-hibiscus.ffb.depot/lib/gson-2.6.2.jar
-hibiscus.ffb.depot/lib/guava-19.0.jar
-hibiscus.ffb.depot/lib/licenses.txt
-hibiscus.ffb.depot/hibiscus.ffb.depot.jar
+$ tar -tf target/hibiscus.ffb.depot-hibiscus-plugin-layout.tar.bz2 
 hibiscus.ffb.depot/plugin.xml
-hibiscus.ffb.depot/license.txt
-hibiscus.ffb.depot/info.txt
-```
+hibiscus.ffb.depot/LICENSE
+hibiscus.ffb.depot/hibiscus.ffb.depot.jar
+hibiscus.ffb.depot/hibiscus.ffb.depot-javadoc.jar
+hibiscus.ffb.depot/hibiscus.ffb.depot-sources.jar
+hibiscus.ffb.depot/lib/guava-19.0.jar
+hibiscus.ffb.depot/lib/htmlunit-2.21.jar
+hibiscus.ffb.depot/lib/gson-2.6.2.jar
+hibiscus.ffb.depot/lib/ffb.depot.client-0.1.0.jar
 
 
 ## Status des Projekts

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>hibiscus.ffb.depot</groupId>
   <artifactId>hibiscus.ffb.depot</artifactId>
-  <version>0.0.2</version>
+  <version>0.1.0</version>
   <name>Hibiscus FFB Depot Connector</name>
   <url>https://github.com/bmhm/hibiscus.ffb.depot</url>
 
