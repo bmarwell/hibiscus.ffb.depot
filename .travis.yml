@@ -5,10 +5,11 @@ sudo: false
 install:
   - ./install-maven-dependencies.sh
 
+os:
+  - linux
+
 jdk:
-  - oraclejdk8
-  - oraclejdk7
-  - openjdk7
+  - openjdk8
 
 cache:
   directories:

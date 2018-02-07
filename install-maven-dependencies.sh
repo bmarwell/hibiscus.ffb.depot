@@ -20,6 +20,7 @@ cleanup() {
         rm -r "${TARGETDIR}/hibiscus-$HIBISCUSRELEASE.src.zip"
     fi
     rm -fr "${TARGETDIR}/jameica-meta"
+    rm -fr "${TARGETDIR}/slf4j-jameica"
 }
 
 check_target_dir() {
@@ -38,15 +39,22 @@ check_target_dir() {
 }
 
 install_jameica() {
-    # Gibt leider kein Buildscript :-(
-    # git clone "https://github.com/willuhn/jameica.git" "${JAMEICADIR}"
-    git clone https://github.com/bmhm/jameica-meta ${TARGETDIR}/jameica-meta
-    cd "${TARGETDIR}/jameica-meta"
-    git submodule init
-    git submodule update
-    mvn install
-    cd ..
-    rm -fr "${TARGETDIR}/jameica-meta"
+  FOUND_META=$(find $HOME/.m2/repository/ -name "jameica-meta*" | wc -l)
+  if [ $FOUND_META -gt 0 ]; then
+    echo "jameica-meta found, not reinstalling." >&2
+    return
+  fi
+
+  # Gibt leider kein Buildscript :-(
+  # git clone "https://github.com/willuhn/jameica.git" "${JAMEICADIR}"
+  echo "jameica-meta NOT found, now installing." >&2
+  git clone https://github.com/bmhm/jameica-meta ${TARGETDIR}/jameica-meta
+  cd "${TARGETDIR}/jameica-meta"
+  git submodule init
+  git submodule update
+  mvn -B install
+  cd ..
+  rm -fr "${TARGETDIR}/jameica-meta"
 }
 
 install_hibiscus() {
@@ -56,9 +64,22 @@ install_hibiscus() {
     wget -O "$TARGETDIR/hibiscus-$HIBISCUSRELEASE.src.zip" "$HIBISCUSSRC"
     cd "${TARGETDIR}"
     unzip "hibiscus-$HIBISCUSRELEASE.zip"
-    mvn install:install-file -Dfile=hibiscus/hibiscus.jar -DgroupId=de.willuhn.jameica \
+    mvn -B install:install-file -Dfile=hibiscus/hibiscus.jar -DgroupId=de.willuhn.jameica \
             -DartifactId=jameica-hbci -Dversion=$HIBISCUSRELEASE -Dpackaging=jar \
             -Dsources=hibiscus-$HIBISCUSRELEASE.src.zip
+}
+
+install_slf4j-jameica() {
+  FOUND_SJ=$(find $HOME/.m2/repository/ -name "slf4j-jameica" | wc -l)
+  if [ $FOUND_SJ -gt 0 ]; then
+    echo "slf4j-jameica found, not reinstalling." >&2
+    return
+  fi
+
+  echo "slf4j-jameica NOT found, no reinstalling." >&2
+  git clone git@github.com:bmhm/slf4j-jameica.git ${TARGETDIR}/slf4j-jameica
+  cd "${TARGETDIR}/slf4j-jameica"
+  mvn -B -T2 install
 }
 
 check_target_dir
@@ -71,6 +92,9 @@ install_jameica
 echo "Installing Hibiscus..." >&2
 sleep 2
 install_hibiscus
+
+echo "Installing slf4j-jameica" >&2
+install_slf4j-jameica
 
 echo "Cleanup" >&2
 cleanup
