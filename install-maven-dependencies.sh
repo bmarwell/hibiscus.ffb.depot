@@ -50,7 +50,7 @@ install_jameica() {
   # Gibt leider kein Buildscript :-(
   # git clone "https://github.com/willuhn/jameica.git" "${JAMEICADIR}"
   echo "jameica-meta NOT found, now installing." >&2
-  git clone https://github.com/bmhm/jameica-meta ${TARGETDIR}/jameica-meta
+  git clone https://github.com/bmhm/jameica-meta.git ${TARGETDIR}/jameica-meta
   cd "${TARGETDIR}/jameica-meta"
   git submodule init
   git submodule update
@@ -79,7 +79,7 @@ install_slf4j-jameica() {
   fi
 
   echo "slf4j-jameica NOT found, no reinstalling." >&2
-  git clone https://github.com:bmhm/slf4j-jameica.git ${TARGETDIR}/slf4j-jameica
+  git clone https://github.com/bmhm/slf4j-jameica.git ${TARGETDIR}/slf4j-jameica
   cd "${TARGETDIR}/slf4j-jameica"
   mvn -B -T2 install
 }
