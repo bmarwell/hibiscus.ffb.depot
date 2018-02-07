@@ -79,7 +79,7 @@ install_slf4j-jameica() {
   fi
 
   echo "slf4j-jameica NOT found, no reinstalling." >&2
-  git clone git@github.com:bmhm/slf4j-jameica.git ${TARGETDIR}/slf4j-jameica
+  git clone https://github.com:bmhm/slf4j-jameica.git ${TARGETDIR}/slf4j-jameica
   cd "${TARGETDIR}/slf4j-jameica"
   mvn -B -T2 install
 }
