@@ -8,16 +8,16 @@
   <dependencySets>
     <dependencySet>
       <outputDirectory>/lib</outputDirectory>
-      <includes>
-        <include>net.sourceforge.htmlunit:htmlunit</include>
-        <include>com.google.code.gson:gson</include>
-        <include>com.google.guava:guava</include>
-        <include>de.bmarwell:ffb.depot.client</include>
-      </includes>
+      <excludes>
+        <exclude>${project.groupId}:${project.artifactId}</exclude>
+        <exclude>de.bmarwell:slf4j-jameica</exclude>
+        <exclude>org.slf4j:slf4j-api</exclude>
+      </excludes>
+
+      <scope>runtime</scope>
       <unpack>false</unpack>
       <useTransitiveDependencies>true</useTransitiveDependencies>
       <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
     </dependencySet>
   </dependencySets>
 
@@ -28,7 +28,7 @@
       <filtered>true</filtered>
     </file>
     <file>
-      <source>LICENSE</source>
+      <source>LICENSE.md</source>
     </file>
   </files>
 

@@ -1,24 +1,22 @@
 /*
- * (c) Copyright 2016 Hbiscus FFB Connector Developers.
+ *  Copyright 2018 The hibiscus.ffb.depot contributors
  *
- * This file is part of Hbiscus FFB Connector.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Hbiscus FFB Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * Hbiscus FFB Connector is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Hbiscus FFB Connector.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package de.bmarwell.hibiscus.ffb;
+
+import static java.util.Objects.requireNonNull;
 
 import de.bmarwell.ffb.depot.client.FfbDepotUtils;
 import de.bmarwell.ffb.depot.client.FfbMobileClient;
@@ -28,15 +26,11 @@ import de.bmarwell.ffb.depot.client.value.FfbDepotNummer;
 import de.bmarwell.ffb.depot.client.value.FfbLoginKennung;
 import de.bmarwell.ffb.depot.client.value.FfbPin;
 
-import com.google.common.base.Preconditions;
-
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
-
-import java.net.MalformedURLException;
-
+import java.math.RoundingMode;
 import javax.annotation.Resource;
 
 /**
@@ -49,35 +43,32 @@ public class FfbSynchronizeKonzoauszug extends SynchronizeJobKontoauszug impleme
   private static final I18N i18n = Application.getPluginLoader().getPlugin(FfbDepotPlugin.class).getResources().getI18N();
 
   @Resource
-  private FfbSynchronizeBackend backend = null;
+  private final FfbSynchronizeBackend backend = null;
 
   @Override
-  public double getDepotwert(String login, String pin, String depotnummer) {
-    Preconditions.checkNotNull(login, "FFB-login ist null.");
-    Preconditions.checkNotNull(pin, "FFB-pin ist null.");
-    Preconditions.checkNotNull(depotnummer, "FFB-depotnummer ist null.");
+  public double getDepotwert(final String login, final String pin, final String depotnummer) {
+    requireNonNull(login, "FFB-login ist null.");
+    requireNonNull(pin, "FFB-pin ist null.");
+    requireNonNull(depotnummer, "FFB-depotnummer ist null.");
 
-    FfbLoginKennung ffblogin = FfbLoginKennung.of(login);
-    FfbPin ffbpin = FfbPin.of(pin);
+    final FfbLoginKennung ffblogin = FfbLoginKennung.of(login);
+    final FfbPin ffbpin = FfbPin.of(pin);
 
     try {
-      FfbMobileClient ffbClient = new FfbMobileClient(ffblogin, ffbpin);
+      final FfbMobileClient ffbClient = new FfbMobileClient(ffblogin, ffbpin);
       ffbClient.logon();
 
-      if (!ffbClient.loginInformation().isPresent() || !ffbClient.loginInformation().get().isLoggedIn()) {
+      if (!ffbClient.isLoggedIn()) {
         throw new IllegalStateException(LOGIN_ERROR);
       }
 
-      FfbDepotNummer depotNr = FfbDepotNummer.of(depotnummer);
-      MyFfbResponse accountData = ffbClient.fetchAccountData();
+      final FfbDepotNummer depotNr = FfbDepotNummer.of(depotnummer);
+      final MyFfbResponse accountData = ffbClient.fetchAccountData();
 
       // In den AccountDaten könnten mehere Depots sein. Es soll aber nur ein Depot
       // angegeben werden.
-      return FfbDepotUtils.getGesamtBestand(accountData, depotNr);
-    } catch (FfbClientError error) {
-      Logger.error(LOGIN_ERROR, error);
-      throw new IllegalStateException(LOGIN_ERROR);
-    } catch (MalformedURLException error) {
+      return FfbDepotUtils.getGesamtBestand(accountData, depotNr).setScale(4, RoundingMode.HALF_UP).doubleValue();
+    } catch (final FfbClientError error) {
       Logger.error(LOGIN_ERROR, error);
       throw new IllegalStateException(LOGIN_ERROR);
     }

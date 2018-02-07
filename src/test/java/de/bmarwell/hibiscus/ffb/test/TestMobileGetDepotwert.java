@@ -1,5 +1,10 @@
 package de.bmarwell.hibiscus.ffb.test;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import de.bmarwell.ffb.depot.client.FfbClientConfiguration;
 import de.bmarwell.ffb.depot.client.FfbMobileClient;
 import de.bmarwell.ffb.depot.client.err.FfbClientError;
 import de.bmarwell.ffb.depot.client.json.LoginResponse;
@@ -7,35 +12,50 @@ import de.bmarwell.ffb.depot.client.json.MyFfbResponse;
 import de.bmarwell.ffb.depot.client.value.FfbLoginKennung;
 import de.bmarwell.ffb.depot.client.value.FfbPin;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import de.willuhn.logging.Level;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URI;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
 
 public class TestMobileGetDepotwert {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestMobileGetDepotwert.class);
 
+  public static final FfbLoginKennung LOGIN = FfbLoginKennung.of("22222301");
+  public static final FfbPin PIN = FfbPin.of("91901");
+
+
+  @Rule
+  public WireMockRule wiremock = new WireMockRule(wireMockConfig().dynamicPort());
+  private FfbMobileClient client;
+  private FfbMobileClient clientWithoutCredentials;
+
+
   @Before
   public void setUp() throws Exception {
+    de.willuhn.logging.Logger.setLevel(Level.DEBUG);
+    final FfbClientConfiguration config = () -> URI.create("http://localhost:" + wiremock.port());
+
+    this.client = new FfbMobileClient(LOGIN, PIN, config);
+    this.clientWithoutCredentials = new FfbMobileClient(config);
   }
 
   @Test
-  public void testGetDepotwertWithoutCredentials() throws FailingHttpStatusCodeException, IOException, FfbClientError {
-    FfbMobileClient mobileAgent = new FfbMobileClient();
-    mobileAgent.logon();
+  public void testGetDepotwertWithoutCredentials() throws FfbClientError {
+    clientWithoutCredentials.logon();
 
-    Assert.assertTrue(mobileAgent.loginInformation().isPresent());
-    LoginResponse loginResponse = mobileAgent.loginInformation().get();
+    assertFalse(clientWithoutCredentials.isLoggedIn());
+    final LoginResponse loginResponse = clientWithoutCredentials.loginInformation();
     LOG.debug("Login: [{}].", loginResponse);
 
-    Assert.assertFalse(loginResponse.isLoggedIn());
+    assertFalse(loginResponse.isLoggedIn());
   }
 
   /**
@@ -52,28 +72,20 @@ public class TestMobileGetDepotwert {
    */
   @Test
   public void testGetDepotwertWithCredentials() throws FfbClientError, MalformedURLException {
-    FfbLoginKennung ffblogin = FfbLoginKennung.of("22222301");
-    FfbPin ffbpin = FfbPin.of("91901");
+    client.logon();
+    final LoginResponse loginResponse = client.loginInformation();
+    assertTrue(loginResponse.isLoggedIn());
 
-    FfbMobileClient mobileAgent = new FfbMobileClient(ffblogin, ffbpin);
-    mobileAgent.logon();
-    Assert.assertTrue(mobileAgent.loginInformation().isPresent());
-
-    LoginResponse loginResponse = mobileAgent.loginInformation().get();
     LOG.debug("Login: [{}].", loginResponse);
 
-    Assert.assertTrue(loginResponse.isLoggedIn());
+    assertTrue(loginResponse.isLoggedIn());
     Assert.assertEquals("Customer", loginResponse.getUsertype());
     Assert.assertEquals("E1000590054", loginResponse.getLastname());
 
-    MyFfbResponse ffbDepotInfo = mobileAgent.fetchAccountData();
-    Assert.assertTrue(ffbDepotInfo.isLogin());
-    Assert.assertFalse(ffbDepotInfo.isModelportfolio());
-    Assert.assertTrue(ffbDepotInfo.getGesamtwert() != 0.00d);
+    final MyFfbResponse ffbDepotInfo = client.fetchAccountData();
+    assertFalse(ffbDepotInfo.isModelportfolio());
+    assertFalse(ffbDepotInfo.getGesamtwert().equals(BigDecimal.ZERO));
     LOG.debug("MyFfb: [{}].", ffbDepotInfo);
-
-    // Assert.assertTrue(mobileAgent.getDepotwert().contains(","));
-    // Assert.assertTrue(mobileAgent.getDepotwert().matches("[0-9]+,[0-9]{2}"));
   }
 
 }

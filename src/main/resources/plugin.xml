@@ -6,12 +6,14 @@
         name="hibiscus.ffb.depot" version="${project.version}" class="de.bmarwell.hibiscus.ffb.FfbDepotPlugin">
 
   <description>Hibiscus-Support für FFB Fidelity Depot</description>
-  <url>https://github.com/bmhm/hibiscus.ffb.depot</url>
+  <url>https://bmhm.github.io/repositories/hibiscus/hibiscus.ffb.depot/hibiscus.ffb.depot.zip</url>
   <homepage>https://github.com/bmhm/hibiscus.ffb.depot</homepage>
-  <license>GNU GPLv2 or later</license>
+
+  <license>Apache License version 2.0</license>
 
   <requires jameica="2.6.0+">
     <import plugin="hibiscus" version="2.6.0+" />
+    <import plugin="slf4j-jameica" version="1.0.0+"/>
   </requires>
 
   <classfinder>

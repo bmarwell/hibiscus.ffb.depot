@@ -1,21 +1,17 @@
 /*
- * (c) Copyright 2016 Hbiscus FFB Connector Developers.
+ *  Copyright 2018 The hibiscus.ffb.depot contributors
  *
- * This file is part of Hbiscus FFB Connector.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Hbiscus FFB Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * Hbiscus FFB Connector is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Hbiscus FFB Connector.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package de.bmarwell.hibiscus.ffb;
@@ -30,7 +26,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
-
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -49,9 +44,9 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
   }
 
   @Override
-  public boolean supports(Class<? extends SynchronizeJob> type, Konto konto) {
+  public boolean supports(final Class<? extends SynchronizeJob> type, final Konto konto) {
     /* Es wird geprüft, ob das Konto null oder disabled ist. */
-    boolean superSupports = super.supports(type, konto);
+    final boolean superSupports = super.supports(type, konto);
     if (!superSupports) {
       return false;
     }
@@ -62,7 +57,7 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
           || konto.getBic().equals("FFBKDEFFTHK")) {
         return true;
       }
-    } catch (RemoteException re) {
+    } catch (final RemoteException re) {
       Logger.error("Kontodaten konnten nicht ermittelt werden - Prüfung auf FFB-Konto nicht möglich.", re);
     }
 
@@ -76,42 +71,45 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
   }
 
   @Override
-  protected JobGroup createJobGroup(Konto konto) {
+  protected JobGroup createJobGroup(final Konto konto) {
     return new FfbJobGroup(konto);
   }
 
   protected class FfbJobGroup extends JobGroup {
 
-    protected FfbJobGroup(Konto konto) {
+    protected FfbJobGroup(final Konto konto) {
       super(konto);
     }
 
     @Override
     protected void sync() throws Exception {
-      ProgressMonitor monitor = worker.getMonitor();
-      String kn = this.getKonto().getLongName();
+      final ProgressMonitor monitor = worker.getMonitor();
+      final String kn = this.getKonto().getLongName();
 
-      int step = 100 / worker.getSynchronization().size();
+      final int step = 100 / worker.getSynchronization().size();
 
       this.checkInterrupted();
 
       monitor.log(" ");
       monitor.log(i18n.tr("Synchronisiere FFB-Konto: {0}", kn));
-      String pin = Application.getCallback()
+      final String pin = Application.getCallback()
           .askPassword("Bitte geben Sie Ihre PIN für den FFB-Zugang " + this.getKonto().getKundennummer() + " ein.");
 
       Logger.info("processing jobs");
-      for (SynchronizeJob job : this.jobs) {
+      for (final SynchronizeJob job : this.jobs) {
         this.checkInterrupted();
 
-        FfbSynchronizeJob ffbjob = (FfbSynchronizeJob) job;
-        double depotwert = ffbjob.getDepotwert(
+        final FfbSynchronizeJob ffbjob = (FfbSynchronizeJob) job;
+        final double depotwert = ffbjob.getDepotwert(
             this.getKonto().getKundennummer(),
             pin,
             this.getKonto().getKontonummer());
-        Umsatz newUmsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class, null);
-        Date umsatzdatum = new Date();
+        this.checkInterrupted();
+        final Umsatz newUmsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class, null);
+
+        final Date umsatzdatum = new Date();
         newUmsatz.setKonto(this.getKonto());
+        newUmsatz.setKommentar("Depotwert");
         newUmsatz.setSaldo(depotwert);
         newUmsatz.setDatum(umsatzdatum);
         newUmsatz.setValuta(umsatzdatum);
@@ -119,6 +117,8 @@ public class FfbSynchronizeBackend extends AbstractSynchronizeBackend<FfbSynchro
         newUmsatz.setArt("Depotwert");
         newUmsatz.store();
         this.getKonto().setSaldo(depotwert);
+        this.getKonto().store();
+        this.checkInterrupted();
 
         monitor.addPercentComplete(step);
       }
