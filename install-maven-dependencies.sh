@@ -24,6 +24,8 @@ cleanup() {
 }
 
 check_target_dir() {
+  mkdir -p $HOME/.m2/repository || true
+
     if  [ ! -e "${BASEDIR}/pom.xml" ]; then
         echo "Konnte BASEDIR nicht bestimmen [${BASEDIR}]." >&2
         exit 1
