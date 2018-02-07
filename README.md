@@ -1,4 +1,4 @@
-[![license](https://img.shields.io/badge/Licence-GPLv2%2B-brightgreen.svg)]() [![Build Status](https://travis-ci.org/bmhm/hibiscus.ffb.depot.svg?branch=master)](https://travis-ci.org/bmhm/hibiscus.ffb.depot) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/19baee31526d4429a038962efbf4e395)](https://www.codacy.com/app/bmarwell/hibiscus-ffb-depot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bmhm/hibiscus.ffb.depot&amp;utm_campaign=Badge_Grade) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://travis-ci.org/bmhm/hibiscus.ffb.depot.svg?branch=master)](https://travis-ci.org/bmhm/hibiscus.ffb.depot) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/19baee31526d4429a038962efbf4e395)](https://www.codacy.com/app/bmarwell/hibiscus-ffb-depot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bmhm/hibiscus.ffb.depot&amp;utm_campaign=Badge_Grade) 
 
 # hibiscus.ffb.depot
 Hibiscus Connector for FFB (FIL Fondsbank).
